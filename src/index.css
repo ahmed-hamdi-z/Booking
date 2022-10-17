@@ -11,3 +11,50 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* Navbar */
+.navbar-brand{
+  color: #fff;
+}
+.navbar{
+  background-color: black;
+}
+.navbar-nav{
+  margin-left:auto ;
+}
+.nav-link{
+
+  color: #fff;
+}
+
+h1{
+  font-size: 20px;
+}
+
+/* Images */
+.small-img{
+  height: 200px;
+  width: 100%;
+  border-radius: 5px;
+}
+.large-img{
+  width: 500px; ;
+  border-radius: 5px;
+}
+
+.sweet-loading{
+margin-right: 50px;
+}
+/* Button */
+.btn{
+  color: black;
+}
+
+/* Box Shadow */
+.bs{
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  margin-top: 20px;
+  border-radius: 5px;
+  padding: 20px;
+}
+
