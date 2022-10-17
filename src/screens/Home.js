@@ -1,248 +1,152 @@
-import React, {useEffect, useState} from 'react'
-import axios from 'axios'
-import Room from '../component/Room';
-import Loader from '../component/Loader';
-import Error from '../component/Error';
-import 'antd/dist/antd.css';
-import moment from 'moment';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import Room from "../component/Room";
+import Loader from "../component/Loader";
+import Error from "../component/Error";
+import "antd/dist/antd.css";
+import moment from "moment";
 
-import { DatePicker, Space } from 'antd';
+import { DatePicker, Space } from "antd";
 const { RangePicker } = DatePicker;
 
-
-function Home(){
-
+function Home() {
   const [rooms, setrooms] = useState([]);
   const [loadind, setloading] = useState();
   const [error, seterror] = useState();
 
-  const [fromdate, setfromdate] = useState()
-  const [todate, settodate] = useState()
+  const [fromdate, setfromdate] = useState();
+  const [todate, settodate] = useState();
 
   const [duplicateRooms, setDublicateRooms] = useState([]);
-
+  const [searchKey, setSearchKey] = useState("");
+  const [type, setType] = useState("");
   useEffect(() => {
     const getRooms = async () => {
-      
       try {
-        const data = (await axios.get('/api/rooms/getAllRooms')).data
-         setrooms(data)
-         console.log(data)
+        setloading(true);
+        const data = (await axios.get("/api/rooms/getAllRooms")).data;
+
+        setrooms(data);
+        setDublicateRooms(data);
+        setloading(false);
       } catch (error) {
-        console.log(error)
+        seterror(true);
+        console.log(error);
+        setloading(false);
       }
-    
     };
-  
+
     getRooms();
   }, []);
-  
-    return (
-        <div>
-          <h1> { rooms.length } </h1>
-        </div>
-    );
-  
-    setfromdate(moment(dates[0]).format("DD-MM-YYYY"));
-    settodate(moment(dates[1]).format("DD-MM-YYYY"));
 
-  
+  function filterByDate(dates) {
+    setfromdate(moment(dates[0]).format("DD-MM-YYYY"));;
+    settodate(moment(dates[1]).format("DD-MM-YYYY"));;
+
     moment.suppressDeprecationWarnings = true;
     var tempRooms = [];
     var availability = false;
-    for (const room of dublicateRooms) {
+    for (const room of duplicateRooms) {
       if (room.currentbookings.length > 0) {
         for (const booking of room.currentbookings) {
           if (
-            !moment(moment(dates[0]), " DD-MM-YYYY").isBetween(
-              booking.fromdate,
-              booking.todate
+            !moment(moment(dates[0]).format("DD-MM-YYYY")).isBetween(
+              booking.startDate,
+              booking.endDate
             ) &&
-            !moment(moment(dates[1]), " DD-MM-YYYY").isBetween(
-              booking.fromdate,
-              booking.todate
+            !moment(moment(dates[1]).format("DD-MM-YYYY")).isBetween(
+              booking.startDate,
+              booking.endDate
             )
           ) {
             if (
-              moment(dates[0], " DD-MM-YYYY") !== booking.fromdate &&
-              moment(dates[0], " DD-MM-YYYY") !== booking.todate &&
-              moment(dates[1], " DD-MM-YYYY") !== booking.fromdate &&
-              moment(dates[1], " DD-MM-YYYY") !== booking.todate
+              moment(dates[0].format("DD-MM-YYYY")) !== booking.startDate &&
+              moment(dates[0].format("DD-MM-YYYY")) !== booking.endDate &&
+              moment(dates[1].format("DD-MM-YYYY")) !== booking.startDate &&
+              moment(dates[1].format("DD-MM-YYYY")) !== booking.endDate
             ) {
               availability = true;
             }
           }
         }
+      }
+
+      if (availability == true || room.currentbookings.length == 0) {
+        tempRooms.push(room);
+      }
+      setrooms(tempRooms);
+    }
+  }
+  function filterBySearch() {
+    const tempRooms = duplicateRooms.filter((room) =>
+      room.name.toLowerCase().includes(searchKey.toLowerCase())
+    );
+    setrooms(tempRooms);
+  }
+
+  function filterByType(e) {
+    if (e !== "all") {
+      setType(e);
+      const tempRooms = duplicateRooms.filter(
+        (room) => room.type.toLowerCase() == e.toLowerCase()
+      );
+      setrooms(tempRooms);
+    } else {
+      setrooms(duplicateRooms);
+    }
+  }
+  return (
+    <div className="col" style={{background:'rgba(179, 178, 2245)', height:'110vh'}}>
+      <div className="col-md-12 back-img">
+        <div className="col img-items ">
+        <div className="row-md-6">
+          <RangePicker format="DD-MM-YYYY" onChange={filterByDate} />
+        </div>
+
+        <div className="col-md-6">
+          <input
+            className="form-control"
+            placeholder="Search Rooms"
+            type="text"
+            value={searchKey}
+            onChange={(e) => {
+              setSearchKey(e.target.value);
+            }}
+            onKeyUp={filterBySearch}
+          />
+        </div>
+
+        <div className="col-md-3">
+          <select
+            className="form-control"
+            value={type}
+            onChange={(e) => {
+              filterByType(e.target.value);
+            }}
+          >
+            <option value="all">All</option>
+            <option value="delux">Delux</option>
+            <option value="non-delux">Non-Delux</option>
+          </select>
+        </div>
+      </div>
+      </div>
+
+      <div className="row justify-content-center mt-5">
+        {loadind ? (
+          <Loader />
+        ) : (
+          rooms.map((room) => {
+            return (
+              <div className="col-md-9 mt-2">
+                <Room room={room} fromdate={fromdate} todate={todate} />
+              </div>
+            );
+          })
+        )}
+      </div>
+    </div>
+  );
 }
 
 export default Home;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// function  Home () {
-
-
-//    const [data, setdata] = useState([]);
-  
-
-  
-//     async  function GetRooms() {
-
-//       try {
-//         const rooms = await axios.get('/api/rooms/getAllRooms')
-//          setdata(rooms)
-//          console.log(rooms)
-//       } catch (error) {
-//         console.log(error)
-//       }
-    
-//   }
-//   useEffect(() => {
-//     GetRooms();
-//   }, []);
-
-
-//   return (
-//     <div>
-//       <h1> Hello  </h1>
-//       <h1> {data.length} </h1>
-//     </div>
-//   )
-// }
-
-// export default Home
-
-
-
-
-
-
-
-// import React, { useState, useEffect } from "react";
-// import axios from 'axios';
-
-
-// function Home() {
-
-
-
-//   useEffect(() => {
-//   const getUsers = async () => {
-//     const users = await fetchUsers();
-//     setUsers(users);
-//   };
-
-//   getUsers(); // run it, run it
-
-//   return () => {
-//     // this now gets called when the component unmounts
-//   };
-// }, []);
-  
-// //       useEffect(() => {
-// //         (async () => {
-
-// //           try {
-// //                  const data =  await axios.get('/api/rooms/getAllRooms').data
-            
-// //                       console.log(data)
-// //                       //  setrooms(data)
-// //                   } catch (error) {
-// //                       console.log(error)
-// //              }
-// //              return ( 
-// //               <div>
-// //                 <h1> hi </h1>
-// //                 {/* <h1> {rooms.length} </h1> */}
-          
-// //            </div>
-// //          )
-
-// //         },[])
-       
-// //       })
-
- 
-// }
-
-
-
-// export default Home
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import React, { useState, useEffect} from 'react'
-
-// import axios from 'axios';
-
-
-// // const Convert = require("../../007 rooms.json")
-// // const welc = Convert.toWelc(json)
-
-
-
-// function  Home() {
-
-//     //GetRooms();
-
-//     //  const [rooms, setrooms] = useState([])
-//     useEffect(async() => {
-//       try {
-//           const data = ( await axios.get('/api/rooms/getAllRooms')).data
-
-//           console.log(data)
-//           //  setrooms(data)
-//       } catch (error) {
-//        console.log(error)
-//       }
-//   }, [])
-
-//   return ( 
-//     <div>
-//       <h1> hi </h1>
-//       {/* <h1> {rooms.length} </h1> */}
-
-//     </div>
-//   )
-// }
-
-// // function GetRooms(){
-    
-// //     // const [rooms, setrooms] = useState([])
-// //     useEffect(async() => {
-//   //             const data = ( await axios.get('/api/rooms/getAllRooms')).data
-//   //         try {
-    
-// //             console.log(data)
-// //         } catch (error) {
-// //             console.log(error)
-// //         }
-// //     }, [])
-// //     }
-// export default Home

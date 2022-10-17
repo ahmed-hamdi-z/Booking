@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=PT+Serif&display=swap');
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -5,11 +7,38 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-family: 'PT Serif', serif;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+.back-img{
+  background-image: url(https://cdn.pixabay.com/photo/2021/12/11/07/59/hotel-6862159_960_720.jpg) ;
+  background-position: center; 
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 100vh;
+  top: 2.5%;
+  border-radius: 10px;
+}
+.img-items{
+  position: absolute;
+  top: 80%;
+  display: inline-flex;
+  }
+
+.bs{
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  border-radius: 5px;
+  padding: 20px;
+  margin-top: 10px;
+}
+
+p{
+  font-size:  16px;
 }
 
 /* Navbar */
@@ -42,19 +71,56 @@ h1{
   border-radius: 5px;
 }
 
+
 .sweet-loading{
-margin-right: 50px;
+ margin-left: 50%;
+ margin-top: 30px;
 }
+
 /* Button */
 .btn{
   color: black;
 }
 
 /* Box Shadow */
-.bs{
-  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-  margin-top: 20px;
-  border-radius: 5px;
-  padding: 20px;
+
+
+/* Register */
+input, select, .ant-picker{
+  box-shadow: none !important;
+  border: 1px solid black;
+  margin-top: 5px;
+  width: 100%;
+  border-radius: 3px;
+  height: 35px;
+
+}
+.h1{
+  font-size: 30px;
+  padding: 10px;
+  font-weight: bold ;
+  text-align: center;
 }
 
+
+.dropdown-toggle{
+  border: 0px solid black !important;
+  background-color: black !important;
+  color: white !important;
+}
+
+
+.ant-picker-input, .ant-picker-input-active{
+  border: none !important;
+}
+
+
+.landing{
+  background-color: black;
+  height: 100vh;
+}
+.landingbtn{
+  background-color:white;
+  color: black;
+ margin-top: 50px;
+}
